@@ -1,0 +1,737 @@
+openapi: 3.0.0
+info:
+  title: "cut_off_marks_v1"
+  description: "API to retrieve information about cut-off marks for degree programs at various universities and centers."
+  contact:
+    name: Prisa Media,
+    url: https://www.prisa.com/,
+    email: comunicacion@prisa.com
+  version: "1.0.0"
+
+servers:
+  - url: https://notascorte.prisamedia.com
+    description: The production cut-off marks API server
+
+  - url: https://pre-notascorte.prisamedia.com
+    description: The development cut-off marks API server
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /degrees:
+    get:
+      tags:
+      - "Degrees"
+      summary: "List of degrees"
+      description: "Returns full degrees list sorted by name"
+      operationId: "get_degrees"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/degree"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /degrees/{degree-id}:
+    get:
+      tags:
+      - "Degrees"
+      summary: "Degree cut-off marks list"
+      description: "Returns a list of different cut-off marks from a single degree sorted by university name"
+      operationId: "get_degree_cut_off_marks"
+      parameters:
+        - $ref: "#/components/parameters/degree-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/degreeCutOffMark"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /universities:
+    get:
+      tags:
+      - "Universities"
+      summary: "List of universities"
+      description: "Returns full universities list sorted by name"
+      operationId: "get_universities"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/university"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /universities/degrees:
+    get:
+      tags:
+      - "Universities"
+      summary: "List of universities and degrees"
+      description: "Returns full universities and degrees list"
+      operationId: "get_universities_and_degrees"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/universityAndDegree"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /universities/{university-id}/degrees:
+    get:
+      tags:
+      - "Universities"
+      summary: "University degrees list"
+      description: "Returns a list of degrees from a single university sorted by degree name"
+      operationId: "get_university_degrees"
+      parameters:
+        - $ref: "#/components/parameters/university-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/universityDegree"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /universities/{university-id}/degrees/{degree-id}:
+    get:
+      tags:
+      - "Universities"
+      summary: "University degree centers list"
+      description: "Returns a list of centers from a single university and degree sorted by center name"
+      operationId: "get_university_degree_centers"
+      parameters:
+        - $ref: "#/components/parameters/university-id"
+        - $ref: "#/components/parameters/degree-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/degreeCutOffMark"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /states/{state-id}/universities:
+    get:
+      tags:
+      - "Universities"
+      summary: "State universities list"
+      description: "Returns all universities from a single state sorted by name"
+      operationId: "get_state_universities"
+      parameters:
+        - $ref: "#/components/parameters/state-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/stateUniversity"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /centers/{center-id}/degrees:
+    get:
+      tags:
+      - "Centers"
+      summary: "Center degrees list"
+      description: "Returns a list of degrees from a single center sorted by degree name"
+      operationId: "get_center_degrees"
+      parameters:
+        - $ref: "#/components/parameters/center-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/degreeCutOffMark"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /cities/{city-id}/centers:
+    get:
+      tags:
+      - "Centers"
+      summary: "City centers list"
+      description: "Returns all centers from a single city sorted by name"
+      operationId: "get_city_centers"
+      parameters:
+        - $ref: "#/components/parameters/city-id"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/cityCenter"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+  /states:
+    get:
+      tags:
+      - "States"
+      summary: "States list"
+      description: "Returns all states sorted by name"
+      operationId: "get_states"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  data:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/state"
+        "500":
+          $ref: "#/components/responses/serverError"
+
+tags:
+- name: "Degrees"
+- name: "Universities"
+- name: "Centers"
+- name: "States"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+
+  schemas:
+    degree:
+      type: "object"
+      description: "Degree info object"
+      properties:
+        degreeId:
+          type: "string"
+          description: "Degree ID"
+          example: "1680"
+        degreeName:
+          type: "string"
+          description: "Degree name"
+          example: "Geografía, Medio Ambiente y Planificación Territorial"
+        degreeSlug:
+          type: "string"
+          description: "Degree slug"
+          example: "geografia-medio-ambiente-y-planificacion-territorial"
+
+    degreeCutOffMark:
+      type: "object"
+      description: "Degree cut-off mark object"
+      properties:
+        degreeId:
+          type: "string"
+          description: "Degree ID"
+          example: "1680"
+        degreeName:
+          type: "string"
+          description: "Degree name"
+          example: "Geografía, Medio Ambiente y Planificación Territorial"
+        degreeSlug:
+          type: "string"
+          description: "Degree slug"
+          example: "geografia-medio-ambiente-y-planificacion-territorial"
+        universityId:
+          type: "string"
+          description: "University ID"
+          example: "1"
+        universityName:
+          type: "string"
+          description: "University name"
+          example: "Universidad Autónoma de Barcelona"
+        universitySlug:
+          type: "string"
+          description: "University slug"
+          example: "universidad-autonoma-de-barcelona"
+        centerId:
+          type: "string"
+          description: "Center ID"
+          example: "4"
+        centerName:
+          type: "string"
+          description: "Center name"
+          example: "Centro Municipal de Arte y Diseño Escuela Massana"
+        centerSlug:
+          type: "string"
+          description: "Center slug"
+          example: "centro-municipal-de-arte-y-diseno-escuela-massana"
+        cityId:
+          type: "string"
+          description: "City ID"
+          example: "3"
+        cityName:
+          type: "string"
+          description: "City name"
+          example: "Barcelona"
+        citySlug:
+          type: "string"
+          description: "City slug"
+          example: "barcelona"
+        cutOffMark:
+          type: "number"
+          format: "float"
+          description: "Cut-off mark"
+          example: 6.72
+
+    university:
+      type: "object"
+      description: "University info object"
+      properties:
+        universityId:
+          type: "string"
+          description: "University ID"
+          example: "1"
+        universityName:
+          type: "string"
+          description: "University name"
+          example: "Universidad Autónoma de Barcelona"
+        universitySlug:
+          type: "string"
+          description: "University slug"
+          example: "universidad-autonoma-de-barcelona"
+        centerId:
+          type: "string"
+          description: "Center ID"
+          example: "4"
+        centerName:
+          type: "string"
+          description: "Center name"
+          example: "Centro Municipal de Arte y Diseño Escuela Massana"
+        centerSlug:
+          type: "string"
+          description: "Center slug"
+          example: "centro-municipal-de-arte-y-diseno-escuela-massana"
+        stateId:
+          type: "string"
+          description: "State ID"
+          example: "5"
+        stateName:
+          type: "string"
+          description: "State name"
+          example: "Barcelona"
+        stateSlug:
+          type: "string"
+          description: "State slug"
+          example: "barcelona"
+        degreesCount:
+          type: "integer"
+          minimum: 0
+          description: "Number of degrees provided in center"
+          example: 3
+
+    universityAndDegree:
+      type: "object"
+      description: "University and degree info object"
+      properties:
+        degree:
+          type: "object"
+          description: "Degree info object"
+          properties:
+            degreeId:
+              type: "string"
+              description: "Degree ID"
+              example: "1680"
+            degreeName:
+              type: "string"
+              description: "Degree name"
+              example: "Geografía, Medio Ambiente y Planificación Territorial"
+            degreeSlug:
+              type: "string"
+              description: "Degree slug"
+              example: "geografia-medio-ambiente-y-planificacion-territorial"
+            universities:
+              type: "string"
+              description: "List of university IDs"
+              example: "1,2,3,5,6,8,15"
+        university:
+          type: "object"
+          description: "University info object"
+          properties:
+            universityId:
+              type: "string"
+              description: "University ID"
+              example: "1"
+            universityName:
+              type: "string"
+              description: "University name"
+              example: "Universidad Autónoma de Barcelona"
+            universitySlug:
+              type: "string"
+              description: "University slug"
+              example: "universidad-autonoma-de-barcelona"
+            degrees:
+              type: "string"
+              description: "List of degree IDs"
+              example: "3,4,7,9,12,16"
+
+    universityDegree:
+      type: "object"
+      description: "University degree info object"
+      properties:
+        degreeId:
+          type: "string"
+          description: "Degree ID"
+          example: "1680"
+        degreeName:
+          type: "string"
+          description: "Degree name"
+          example: "Geografía, Medio Ambiente y Planificación Territorial"
+        degreeSlug:
+          type: "string"
+          description: "Degree slug"
+          example: "geografia-medio-ambiente-y-planificacion-territorial"
+        universityId:
+          type: "string"
+          description: "University ID"
+          example: "1"
+        universityName:
+          type: "string"
+          description: "University name"
+          example: "Universidad Autónoma de Barcelona"
+        universitySlug:
+          type: "string"
+          description: "University slug"
+          example: "universidad-autonoma-de-barcelona"
+        centerId:
+          type: "string"
+          description: "Center ID"
+          example: "4"
+        centerName:
+          type: "string"
+          description: "Center name"
+          example: "Centro Municipal de Arte y Diseño Escuela Massana"
+        centerSlug:
+          type: "string"
+          description: "Center slug"
+          example: "centro-municipal-de-arte-y-diseno-escuela-massana"
+        cityId:
+          type: "string"
+          description: "City ID"
+          example: "3"
+        cityName:
+          type: "string"
+          description: "City name"
+          example: "Barcelona"
+        citySlug:
+          type: "string"
+          description: "City slug"
+          example: "barcelona"
+        cutOffMark:
+          type: "number"
+          format: "float"
+          description: "Cut-off mark"
+          example: 6.72
+
+    stateUniversity:
+      type: "object"
+      description: "State university info object"
+      properties:
+        universityId:
+          type: "string"
+          description: "University ID"
+          example: "1"
+        universityName:
+          type: "string"
+          description: "University name"
+          example: "Universidad Autónoma de Barcelona"
+        universitySlug:
+          type: "string"
+          description: "University slug"
+          example: "universidad-autonoma-de-barcelona"
+        stateId:
+          type: "string"
+          description: "State ID"
+          example: "5"
+        stateName:
+          type: "string"
+          description: "State name"
+          example: "Barcelona"
+        stateSlug:
+          type: "string"
+          description: "State slug"
+          example: "barcelona"
+
+    cityCenter:
+      type: "object"
+      description: "City center info object"
+      properties:
+        centerId:
+          type: "string"
+          description: "Center ID"
+          example: "4"
+        centerName:
+          type: "string"
+          description: "Center name"
+          example: "Centro Municipal de Arte y Diseño Escuela Massana"
+        centerSlug:
+          type: "string"
+          description: "Center slug"
+          example: "centro-municipal-de-arte-y-diseno-escuela-massana"
+        stateId:
+          type: "string"
+          description: "State ID"
+          example: "5"
+        stateName:
+          type: "string"
+          description: "State name"
+          example: "Barcelona"
+        stateSlug:
+          type: "string"
+          description: "State slug"
+          example: "barcelona"
+        cityId:
+          type: "string"
+          description: "City ID"
+          example: "3"
+        cityName:
+          type: "string"
+          description: "City name"
+          example: "Barcelona"
+        citySlug:
+          type: "string"
+          description: "City slug"
+          example: "barcelona"
+        degreesCount:
+          type: "integer"
+          minimum: 0
+          description: "Number of degrees provided in center"
+          example: 3
+
+    state:
+      type: "object"
+      description: "State info object"
+      properties:
+        stateId:
+          type: "string"
+          description: "State ID"
+          example: "1"
+        stateName:
+          type: "string"
+          description: "State name"
+          example: "Alicante"
+        stateSlug:
+          type: "string"
+          description: "State slug"
+          example: "alicante"
+
+  parameters:
+    degree-id:
+      name: "degree-id"
+      in: "path"
+      required: true
+      description: "Degree ID"
+      example: "1"
+      schema:
+        type: "string"
+
+    university-id:
+      name: "university-id"
+      in: "path"
+      required: true
+      description: "University ID"
+      example: "1"
+      schema:
+        type: "string"
+
+    state-id:
+      name: "state-id"
+      in: "path"
+      required: true
+      description: "State ID"
+      example: "23"
+      schema:
+        type: "string"
+
+    center-id:
+      name: "center-id"
+      in: "path"
+      required: true
+      description: "Center ID"
+      example: "1980"
+      schema:
+        type: "string"
+    
+    city-id:
+      name: "city-id"
+      in: "path"
+      required: true
+      description: "City ID"
+      example: "42"
+      schema:
+        type: "string"
+
+  responses:
+    badRequest:
+      description: "Invalid request parameters"
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "object"
+                description: "Bad request error object"
+                properties:
+                  code:
+                    type: "string"
+                    description: "Error code"
+                  message:
+                    type: "string"
+                    description: "Error message"
+                  details:
+                    type: "array"
+                    items:
+                      type: "object"
+                      description: "Error details info object"
+                      properties:
+                        field:
+                          type: "string"
+                          description: "Name of field that caused the error"
+                        issue:
+                          type: "string"
+                          description: "Description of the error related to the field"
+          examples:
+            badRequestExample:
+              $ref: "#/components/examples/badRequestExample"
+
+    serverError:
+      description: "Internal server error"
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "object"
+                description: "Internal server error object"
+                properties:
+                  code:
+                    type: "string"
+                    description: "Error code"
+                  message:
+                    type: "string"
+                    description: "Error message"
+                  details:
+                    type: "array"
+                    items:
+                      type: "object"
+                      description: "Error details info object"
+                      properties:
+                        field:
+                          type: "string"
+                          description: "Name of field that caused the error"
+                        issue:
+                          type: "string"
+                          description: "Description of the error related to the field"
+          examples:
+            serverErrorExample:
+              $ref: "#/components/examples/serverErrorExample"
+
+  examples:
+    badRequestExample:
+      summary: "Example of a 400 Bad Request error"
+      value:
+        error: {
+          code: "BAD_REQUEST",
+          message: "The request could not be understood or was missing required parameters.",
+          details: [
+            {
+              field: "parameter_name",
+              issue: "Invalid or missing value for parameter 'parameter_name'."
+            }
+          ]
+        }
+        
+    serverErrorExample:
+      summary: "Example of a 500 Internal Server error"
+      value:
+        error: {
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred on the server.",
+          details: [
+            {
+              field: "server",
+              issue: "An unhandled exception occurred. Please try again later or contact support."
+            }
+          ]
+        }
