@@ -3,7 +3,7 @@ info:
   title: "cut_off_marks_v1"
   description: "API to retrieve information about cut-off marks for degree programs at various universities and centers."
   contact:
-    name: Prisa Media,
+    name: Prisa Media
     url: https://www.prisa.com/
     email: comunicacion@prisa.com
   version: "1.0.0"
